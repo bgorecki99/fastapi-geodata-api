@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  fastapi:
+    build: 
+      context: .
+      dockerfile: Dockerfile 
+    container_name: fastapi-app
+    ports:
+      - 8000:8000
+    volumes:
+      - ./app/logs:/app/logs  # Mount the local logs directory inside the container
+    restart: unless-stopped
