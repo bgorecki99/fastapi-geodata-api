@@ -29,6 +29,7 @@ This endpoint returns the number of litter/dog bins within each Conservation Are
 
 ### /upload-geojson/
 This endpoint allows the user to upload valid GeoJSON files and returns a summary of the file. This includes the number of feature rows, feature column names, coordinate reference system of the file and all unique geometry types.
+
 ![image](https://github.com/user-attachments/assets/d0f23871-2670-467b-a52f-3d349329d1ab)
 ![image](https://github.com/user-attachments/assets/91582a40-9f70-4b6b-bedd-2b7372b82601)
 
