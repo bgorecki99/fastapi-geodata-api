@@ -2,6 +2,7 @@
 The FastAPI main app. Contains the routes
 created in routes.py.
 """
+
 __author__ = "Bartosz Gorecki"
 __date_created__ = "26/01/2025"
 __last_updated__ = "26/01/2025"

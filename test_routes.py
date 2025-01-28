@@ -5,6 +5,7 @@ This checks all endpoints for both a valid
 and invalid response and ensures all endpoints
 are working as expected.
 """
+
 __author__ = "Bartosz Gorecki"
 __date_created__ = "27/01/2025"
 __last_updated__ = "27/01/2025"
@@ -20,7 +21,7 @@ from app.routes import router
 from mock_data import (
     mock_nearest_gp_pharmacy_response,
     mock_gp_within_radius_response,
-    mock_bins_in_nature_areas_response
+    mock_bins_in_nature_areas_response,
 )
 
 
@@ -37,6 +38,7 @@ def client():
         the application.
     """
     from fastapi import FastAPI
+
     app = FastAPI()
     app.include_router(router)  # Include the router
     return TestClient(app)
@@ -50,10 +52,7 @@ def test_nearest_gp_pharmacy(client):
         client (TestClient): The FastAPI test client used to send the request.
     """
     # Call the endpoint with mock latitude and longitude
-    params = {
-        "latitude": 53.95308834600985,
-        "longitude": -1.0627414822978332
-    }
+    params = {"latitude": 53.95308834600985, "longitude": -1.0627414822978332}
     response = client.get("/nearest-gp-pharmacy", params=params)
     print(response.json())
     # Assert the status code and response
@@ -76,7 +75,7 @@ def test_gp_within_radius(client):
     params = {
         "latitude": 53.95308834600985,
         "longitude": -1.0627414822978332,
-        "radius": 1
+        "radius": 1,
     }
     response = client.get("/gp-within-radius", params=params)
     assert response.status_code == 200
@@ -103,32 +102,32 @@ def test_upload_geojson(client):
         client (TestClient): The FastAPI test client used to send the request.
     """
     # Create a mock file in GeoJSON format
-    mock_file_content = json.dumps({
-        "type": "FeatureCollection",
-        "features": [{
-            "type": "Feature",
-            "crs": {
-                "type": "name",
-                "properties": {
-                    "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    mock_file_content = json.dumps(
+        {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "crs": {
+                        "type": "name",
+                        "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"},
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [-1.0627414822978332, 53.95308834600985],
+                    },
+                    "properties": {"name": "Test Feature"},
                 }
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-1.0627414822978332, 53.95308834600985]
-            },
-            "properties": {
-                "name": "Test Feature"
-            }
-        }]
-    })
+            ],
+        }
+    )
     file = BytesIO(mock_file_content.encode())
     file.name = "test.geojson"
 
     # Make the POST request to upload the file
     response = client.post(
         "/upload-geojson/",
-        files={"file": ("test.geojson", file, "application/geo+json")}
+        files={"file": ("test.geojson", file, "application/geo+json")},
     )
 
     assert response.status_code == 200
@@ -155,7 +154,7 @@ def test_invalid_geojson_upload(client):
     # Try uploading the invalid file
     response = client.post(
         "/upload-geojson/",
-        files={"file": ("invalid.geojson", file, "application/geo+json")}
+        files={"file": ("invalid.geojson", file, "application/geo+json")},
     )
 
     assert response.status_code == 400
@@ -212,10 +211,8 @@ def test_no_gps_within_radius(client):
     params = {
         "latitude": 54.70262759047464,
         "longitude": -1.9656533157159222,
-        "radius": 1
+        "radius": 1,
     }
     response = client.get("/gp-within-radius", params=params)
     assert response.status_code == 404
-    assert response.json() == {
-        "error": "No GPs found within the specified radius"
-    }
+    assert response.json() == {"error": "No GPs found within the specified radius"}
